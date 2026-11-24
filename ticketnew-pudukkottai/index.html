@@ -1,0 +1,2129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>TicketVibe Pudukkottai — Movie Ticket Booking</title>
+  <meta name="description" content="Online Movie Ticket Booking for Pudukkottai Theatres — Sri Brinda Multiplex, Shanthi Theatre, Bhuvaneswari & Siva Cinemas." />
+  
+  <!-- Google Fonts: Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ==========================================================================
+       1. CSS VARIABLES & THEME (TicketNew-Inspired Clean Modern Aesthetic)
+       ========================================================================== */
+    :root {
+      --primary: #1F3B2E;          /* Pine Forest Green */
+      --primary-dark: #152920;
+      --primary-light: #EBF4FC;
+      --secondary: #1F3B2E;
+      --accent: #6BB3E8;           /* Sky Blue Accent */
+      --warning: #ff9800;          /* Fast filling orange */
+      --bg-page: #E8DCC6;          /* Sand Cream Global Background */
+      --bg-card: #ffffff;          /* Pure White Cards */
+      --text-main: #1F3B2E;        /* Pine Forest Green */
+      --text-muted: #485E53;
+      --text-light: #6A8274;
+      --border: #D6C8AF;
+      --border-dark: #B8A88E;
+      
+      --seat-avail-border: #D6C8AF;
+      --seat-avail-bg: #ffffff;
+      --seat-sel-bg: #1F3B2E;
+      --seat-sel-border: #6D28D9;
+      --seat-booked-bg: #e2e8f0;
+      --seat-booked-border: #cbd5e1;
+      
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+      --shadow-lg: 0 10px 25px rgba(0,0,0,0.12);
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --radius-full: 9999px;
+      
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-head: 'Outfit', sans-serif;
+    }
+
+    /* Base Reset */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      text-shadow: none !important;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    button, input, select {
+      font-family: inherit;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    /* ==========================================================================
+       2. TOP NAVIGATION BAR (Location: Pudukkottai)
+       ========================================================================== */
+    .site-header {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-head);
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--secondary);
+      letter-spacing: -0.5px;
+    }
+
+    .brand-logo svg {
+      width: 32px;
+      height: 32px;
+      fill: var(--primary);
+    }
+
+    .brand-logo span {
+      color: var(--primary);
+    }
+
+    .nav-center {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex: 1;
+      max-width: 540px;
+      margin: 0 24px;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-page);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 8px 16px;
+      width: 100%;
+      transition: all 0.2s;
+    }
+
+    .search-box:focus-within {
+      border-color: var(--primary);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(0, 176, 116, 0.15);
+    }
+
+    .search-box input {
+      border: none;
+      background: transparent;
+      outline: none;
+      width: 100%;
+      font-size: 14px;
+      color: var(--text-main);
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .location-picker {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .location-picker:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .location-picker select {
+      border: none;
+      background: transparent;
+      outline: none;
+      font-weight: 600;
+      cursor: pointer;
+      color: inherit;
+    }
+
+    .btn-user {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--primary);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: var(--radius-full);
+      border: none;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-user:hover {
+      background: var(--primary-dark);
+    }
+
+    /* ==========================================================================
+       3. MOVIE BANNER & HEADER (TicketNew Hero Section)
+       ========================================================================== */
+    .movie-hero-section {
+      background: linear-gradient(135deg, #131b26 0%, #1e293b 100%);
+      color: #ffffff;
+      padding: 24px 0 28px;
+      position: relative;
+    }
+
+    .movie-hero-inner {
+      display: grid;
+      grid-template-columns: 160px 1fr auto;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .movie-poster-wrap {
+      width: 160px;
+      height: 230px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      border: 2px solid rgba(255,255,255,0.15);
+      background: #273549;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .movie-poster-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .movie-details h1 {
+      font-family: var(--font-head);
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    .movie-meta-tags {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .tag-cert {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .tag-format {
+      background: var(--primary);
+      color: #fff;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .meta-item {
+      font-size: 13px;
+      color: #cbd5e1;
+    }
+
+    .meta-divider {
+      color: #64748b;
+    }
+
+    .movie-rating-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-full);
+      padding: 4px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #facc15;
+      margin-bottom: 12px;
+    }
+
+    .movie-synopsis {
+      font-size: 14px;
+      color: #94a3b8;
+      max-width: 650px;
+      line-height: 1.6;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Switch Movie Drawer / Selector */
+    .switch-movie-btn {
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .switch-movie-btn:hover {
+      background: rgba(255, 255, 255, 0.22);
+      border-color: #fff;
+    }
+
+    /* ==========================================================================
+       4. HORIZONTAL DATE STRIP (TicketNew Style)
+       ========================================================================== */
+    .date-strip-section {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 64px;
+      z-index: 90;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+
+    .date-strip-inner {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      overflow-x: auto;
+      padding: 12px 0;
+      scrollbar-width: none;
+    }
+
+    .date-strip-inner::-webkit-scrollbar {
+      display: none;
+    }
+
+    .date-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 72px;
+      padding: 8px 10px;
+      border-radius: var(--radius-md);
+      background: transparent;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .date-card:hover {
+      background: #f1f5f9;
+      border-color: var(--border);
+    }
+
+    .date-card.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+      box-shadow: 0 4px 10px rgba(0, 176, 116, 0.3);
+    }
+
+    .date-card .day-name {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      opacity: 0.85;
+    }
+
+    .date-card .day-num {
+      font-size: 18px;
+      font-weight: 800;
+      font-family: var(--font-head);
+      margin: 2px 0;
+    }
+
+    .date-card .month-name {
+      font-size: 11px;
+      font-weight: 600;
+      opacity: 0.85;
+    }
+
+    /* Filters Bar */
+    .filters-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .filter-pills {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filter-pill {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+
+    .filter-pill:hover {
+      border-color: var(--text-muted);
+      color: var(--text-main);
+    }
+
+    .filter-pill.active {
+      background: var(--secondary);
+      border-color: var(--secondary);
+      color: #ffffff;
+    }
+
+    .legend-indicators {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .legend-dot.avail { background: var(--primary); }
+    .legend-dot.fast { background: var(--warning); }
+    .legend-dot.full { background: var(--accent); }
+
+    /* ==========================================================================
+       5. THEATRE LISTINGS FOR PUDUKKOTTAI
+       ========================================================================== */
+    .theatres-section {
+      padding: 24px 0 60px;
+    }
+
+    .theatre-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      padding: 22px;
+      margin-bottom: 20px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .theatre-card:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    .theatre-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px dashed var(--border);
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .theatre-title-box h3 {
+      font-family: var(--font-head);
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--secondary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .theatre-location {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .theatre-amenities {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .amenity-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #f1f5f9;
+      color: #475569;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .amenity-badge.cancellation {
+      color: #059669;
+      background: #ecfdf5;
+    }
+
+    /* Showtimes Grid */
+    .showtimes-grid {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .showtime-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+      border: 1.5px solid var(--primary);
+      border-radius: var(--radius-md);
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      min-width: 105px;
+      text-align: center;
+      position: relative;
+    }
+
+    .showtime-btn:hover {
+      background: var(--primary-light);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0, 176, 116, 0.18);
+    }
+
+    .showtime-btn.fast-filling {
+      border-color: var(--warning);
+    }
+    .showtime-btn.fast-filling:hover {
+      background: #fffbeb;
+      box-shadow: 0 4px 10px rgba(255, 152, 0, 0.18);
+    }
+
+    .showtime-btn.almost-full {
+      border-color: var(--accent);
+    }
+    .showtime-btn.almost-full:hover {
+      background: #fef2f2;
+      box-shadow: 0 4px 10px rgba(255, 82, 82, 0.18);
+    }
+
+    .showtime-time {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--secondary);
+      letter-spacing: -0.3px;
+    }
+
+    .showtime-sub {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .showtime-btn:hover .showtime-sub {
+      color: var(--primary-dark);
+    }
+
+    /* ==========================================================================
+       6. INTERACTIVE SEAT SELECTION MODAL / VIEW
+       ========================================================================== */
+    .seat-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      overflow-y: auto;
+    }
+
+    .seat-modal-backdrop.active {
+      display: flex;
+    }
+
+    .seat-modal {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 1020px;
+      max-height: 94vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+      overflow: hidden;
+      animation: modalFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.96) translateY(10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .seat-modal-header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .seat-header-info h4 {
+      font-family: var(--font-head);
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--secondary);
+    }
+
+    .seat-header-meta {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    .btn-close-modal {
+      background: #f1f5f9;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: var(--text-main);
+      transition: all 0.2s;
+    }
+
+    .btn-close-modal:hover {
+      background: #e2e8f0;
+      color: var(--accent);
+    }
+
+    /* Modal Body (Seat Layout) */
+    .seat-modal-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 20px;
+      background: #fafbfc;
+      text-align: center;
+    }
+
+    /* Curved Cinema Screen */
+    .screen-container {
+      max-width: 600px;
+      margin: 0 auto 36px;
+      position: relative;
+    }
+
+    .screen-curve {
+      height: 18px;
+      border-top: 5px solid var(--primary);
+      border-radius: 50% 50% 0 0 / 40% 40% 0 0;
+      box-shadow: 0 -8px 20px rgba(124, 58, 237, 0.25);
+    }
+
+    .screen-text {
+      font-size: 11px;
+      font-weight: 800;
+      color: #94a3b8;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+
+    /* Tier Categories & Seat Grid */
+    .tier-section {
+      margin-bottom: 28px;
+    }
+
+    .tier-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 720px;
+      margin: 0 auto 12px;
+      padding: 6px 12px;
+      background: #f1f5f9;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .tier-price {
+      color: var(--primary-dark);
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    .seat-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .row-label {
+      width: 24px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #94a3b8;
+      text-align: center;
+      user-select: none;
+    }
+
+    .aisle-gap {
+      width: 22px;
+    }
+
+    /* Individual Seat Button */
+    .seat {
+      width: 28px;
+      height: 26px;
+      border-radius: 5px 5px 3px 3px;
+      border: 1.5px solid var(--seat-avail-border);
+      background: var(--seat-avail-bg);
+      font-size: 10px;
+      font-weight: 700;
+      color: #475569;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+      user-select: none;
+      outline: none;
+      position: relative;
+    }
+
+    .seat:hover:not(.booked) {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      transform: scale(1.15);
+      z-index: 2;
+    }
+
+    .seat:focus-visible {
+      box-shadow: 0 0 0 3px rgba(0, 176, 116, 0.4);
+    }
+
+    .seat.selected {
+      background: var(--seat-sel-bg);
+      border-color: var(--seat-sel-border);
+      color: #ffffff;
+      transform: scale(1.08);
+      box-shadow: 0 2px 6px rgba(0, 176, 116, 0.35);
+    }
+
+    .seat.booked {
+      background: var(--seat-booked-bg);
+      border-color: var(--seat-booked-border);
+      color: #94a3b8;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    /* Seat Status Legend in Modal Footer */
+    .seat-modal-footer {
+      background: #ffffff;
+      border-top: 1px solid var(--border);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.04);
+    }
+
+    .seat-legend-box {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .seat-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-seat-sample {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      border: 1.5px solid var(--border-dark);
+    }
+    .legend-seat-sample.avail { background: #fff; border-color: var(--seat-avail-border); }
+    .legend-seat-sample.sel { background: var(--primary); border-color: var(--primary-dark); }
+    .legend-seat-sample.book { background: var(--seat-booked-bg); border-color: var(--seat-booked-border); }
+
+    .seat-selection-tally {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .tally-text {
+      text-align: right;
+    }
+
+    .tally-seats-count {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .tally-total-price {
+      font-family: var(--font-head);
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--secondary);
+    }
+
+    .btn-proceed-checkout {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 12px 28px;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-proceed-checkout:hover:not(:disabled) {
+      background: var(--primary-dark);
+      box-shadow: 0 4px 14px rgba(0, 176, 116, 0.35);
+    }
+
+    .btn-proceed-checkout:disabled {
+      background: #cbd5e1;
+      cursor: not-allowed;
+    }
+
+    /* ==========================================================================
+       7. BOOKING SUMMARY & CHECKOUT MODAL
+       ========================================================================== */
+    .checkout-modal {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 560px;
+      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+      animation: modalFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .checkout-header {
+      background: var(--secondary);
+      color: #ffffff;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .checkout-header h3 {
+      font-family: var(--font-head);
+      font-size: 18px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .checkout-body {
+      padding: 24px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .ticket-summary-card {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      margin-bottom: 20px;
+    }
+
+    .ticket-movie-row {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      padding-bottom: 14px;
+      border-bottom: 1px dashed var(--border);
+      margin-bottom: 14px;
+    }
+
+    .checkout-poster {
+      width: 60px;
+      height: 85px;
+      border-radius: 6px;
+      object-fit: cover;
+      background: #ddd;
+    }
+
+    .checkout-movie-title {
+      font-family: var(--font-head);
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--secondary);
+    }
+
+    .checkout-movie-meta {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    .summary-info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      font-size: 13px;
+    }
+
+    .summary-info-item span {
+      display: block;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .summary-info-item strong {
+      color: var(--secondary);
+      font-weight: 700;
+    }
+
+    .selected-seats-badge-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .seat-badge {
+      background: var(--primary-light);
+      border: 1px solid rgba(0, 176, 116, 0.3);
+      color: var(--primary-dark);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    /* Price Breakdown */
+    .bill-breakdown {
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+    }
+
+    .bill-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      color: var(--text-muted);
+    }
+
+    .bill-row.total-row {
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--secondary);
+      padding-top: 10px;
+      border-top: 1.5px solid var(--secondary);
+      margin-top: 8px;
+    }
+
+    /* Contact Details form */
+    .checkout-form-group {
+      margin-bottom: 16px;
+    }
+
+    .checkout-form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--secondary);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .checkout-form-group input {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      font-size: 14px;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    .checkout-form-group input:focus {
+      border-color: var(--primary);
+    }
+
+    .btn-confirm-payment {
+      width: 100%;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-confirm-payment:hover {
+      background: var(--primary-dark);
+    }
+
+    /* ==========================================================================
+       8. INSTANT CONFIRMED DIGITAL M-TICKET PASS
+       ========================================================================== */
+    .ticket-pass {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    .ticket-pass-header {
+      background: var(--primary);
+      color: #fff;
+      padding: 18px 24px;
+      text-align: center;
+    }
+
+    .ticket-pass-header h2 {
+      font-family: var(--font-head);
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+
+    .ticket-pass-body {
+      padding: 24px;
+      text-align: center;
+    }
+
+    .ticket-qr-code {
+      width: 150px;
+      height: 150px;
+      margin: 0 auto 16px;
+      padding: 8px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+    }
+
+    .ticket-booking-id {
+      display: inline-block;
+      background: #f1f5f9;
+      color: var(--secondary);
+      font-family: monospace;
+      font-size: 14px;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 4px;
+      letter-spacing: 1px;
+      margin-bottom: 20px;
+    }
+
+    /* ==========================================================================
+       9. RESPONSIVE DESIGN (Mobile & Tablet)
+       ========================================================================== */
+    @media (max-width: 768px) {
+      .movie-hero-inner {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 18px;
+      }
+
+      .movie-poster-wrap {
+        margin: 0 auto;
+        width: 130px;
+        height: 190px;
+      }
+
+      .movie-meta-tags,
+      .movie-synopsis {
+        justify-content: center;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .switch-movie-btn {
+        margin: 0 auto;
+      }
+
+      .nav-center {
+        display: none; /* Hide top search on small phones */
+      }
+
+      .seat-modal-header {
+        padding: 12px 16px;
+      }
+
+      .seat-modal-footer {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+      }
+
+      .seat-selection-tally {
+        justify-content: space-between;
+      }
+
+      .seat {
+        width: 24px;
+        height: 24px;
+        font-size: 9px;
+      }
+
+      .aisle-gap {
+        width: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       TOP NAVIGATION BAR
+       ========================================================================== -->
+  <header class="site-header">
+    <div class="container nav-inner">
+      <div class="brand-logo">
+        <svg viewBox="0 0 24 24">
+          <path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4V6z"/>
+        </svg>
+        Ticket<span>Vibe</span>
+      </div>
+
+      <div class="nav-center">
+        <div class="search-box">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="movieSearchInput" placeholder="Search movies or theatres in Pudukkottai..." />
+        </div>
+      </div>
+
+      <div class="nav-right">
+        <div class="location-picker" title="Selected Location">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+          <select id="locationSelect">
+            <option value="pudukkottai" selected>Pudukkottai</option>
+            <option value="trichy">Trichy</option>
+            <option value="madurai">Madurai</option>
+            <option value="thanjavur">Thanjavur</option>
+            <option value="chennai">Chennai</option>
+          </select>
+        </div>
+
+        <button class="btn-user" id="userBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <span>Sign In</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       MOVIE DETAILS BANNER (DYNAMICALLY RENDERED)
+       ========================================================================== -->
+  <section class="movie-hero-section">
+    <div class="container movie-hero-inner" id="movieHeroContainer">
+      <!-- Populated via JavaScript -->
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       DATE SELECTION STRIP & FILTERS
+       ========================================================================== -->
+  <section class="date-strip-section">
+    <div class="container">
+      <div class="date-strip-inner" id="dateStripContainer">
+        <!-- 6 Days Generated dynamically via JavaScript -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Filters & Legend Bar -->
+  <section class="container filters-bar">
+    <div class="filter-pills">
+      <button class="filter-pill active" data-filter="all">All Shows</button>
+      <button class="filter-pill" data-filter="morning">Morning (Before 12 PM)</button>
+      <button class="filter-pill" data-filter="matinee">Matinee (12 PM - 4 PM)</button>
+      <button class="filter-pill" data-filter="evening">Evening (4 PM - 7 PM)</button>
+      <button class="filter-pill" data-filter="night">Night (7 PM Onwards)</button>
+    </div>
+
+    <div class="legend-indicators">
+      <div class="legend-item"><span class="legend-dot avail"></span> Available</div>
+      <div class="legend-item"><span class="legend-dot fast"></span> Fast Filling</div>
+      <div class="legend-item"><span class="legend-dot full"></span> Almost Full</div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       THEATRE SHOWTIMES LISTINGS FOR PUDUKKOTTAI
+       ========================================================================== -->
+  <main class="container theatres-section" id="theatresListContainer">
+    <!-- Populated via JavaScript -->
+  </main>
+
+  <!-- ==========================================================================
+       INTERACTIVE SEAT SELECTION MODAL
+       ========================================================================== -->
+  <div class="seat-modal-backdrop" id="seatModalBackdrop" role="dialog" aria-modal="true" aria-labelledby="seatModalTitle">
+    <div class="seat-modal">
+      <!-- Modal Header -->
+      <div class="seat-modal-header">
+        <div class="seat-header-info">
+          <h4 id="seatModalTitle">Select Seats</h4>
+          <div class="seat-header-meta" id="seatModalMeta">
+            Sri Brinda Multiplex, Pudukkottai · Screen 1 · Today, 06:30 PM
+          </div>
+        </div>
+        <button class="btn-close-modal" id="closeSeatModalBtn" aria-label="Close Seat Selection">
+          ✕
+        </button>
+      </div>
+
+      <!-- Modal Body (Auditorium & Seats Grid) -->
+      <div class="seat-modal-body">
+        <!-- Cinema Screen Curve -->
+        <div class="screen-container">
+          <div class="screen-curve"></div>
+          <div class="screen-text">All Eyes Facing Here — Screen</div>
+        </div>
+
+        <!-- Seats by Tier -->
+        <div id="seatGridContainer">
+          <!-- Dynamically generated tiers and rows -->
+        </div>
+      </div>
+
+      <!-- Modal Footer (Legend & Live Tally) -->
+      <div class="seat-modal-footer">
+        <div class="seat-legend-box">
+          <div class="seat-legend-item">
+            <span class="legend-seat-sample avail"></span> Available
+          </div>
+          <div class="seat-legend-item">
+            <span class="legend-seat-sample sel"></span> Selected
+          </div>
+          <div class="seat-legend-item">
+            <span class="legend-seat-sample book"></span> Sold Out
+          </div>
+        </div>
+
+        <div class="seat-selection-tally">
+          <div class="tally-text">
+            <div class="tally-seats-count" id="tallySeatsCount">0 Seats Selected</div>
+            <div class="tally-total-price" id="tallyTotalPrice">₹0</div>
+          </div>
+
+          <button class="btn-proceed-checkout" id="proceedCheckoutBtn" disabled>
+            <span>Proceed</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       BOOKING SUMMARY & CHECKOUT MODAL
+       ========================================================================== -->
+  <div class="seat-modal-backdrop" id="checkoutModalBackdrop" role="dialog" aria-modal="true">
+    <div class="checkout-modal">
+      <div class="checkout-header">
+        <h3>Booking Summary</h3>
+        <button class="btn-close-modal" id="closeCheckoutModalBtn" style="background: rgba(255,255,255,0.15); color: #fff;">
+          ✕
+        </button>
+      </div>
+
+      <div class="checkout-body" id="checkoutBody">
+        <!-- Dynamically injected ticket summary and user form -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       JAVASCRIPT LOGIC & MOCK DATA
+       ========================================================================== -->
+  <script>
+    /**
+     * ==========================================================================
+     * WHERE THE MOCK DATA LIVES:
+     * Edit the `MOCK_DATA` object below to add/modify movies, theatres in
+     * Pudukkottai, showtimes, seat categories, and ticket pricing.
+     * ==========================================================================
+     */
+    const MOCK_DATA = {
+      // 1. Movies currently showing in Pudukkottai
+      movies: [
+        {
+          id: 'm1',
+          title: 'Amaran',
+          certificate: 'UA 16+',
+          language: 'Tamil',
+          format: '2D · Dolby Atmos',
+          genre: 'Action · Biopic · Drama',
+          duration: '2h 49m',
+          rating: '9.2',
+          votes: '42.8K',
+          poster: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&w=600&q=80',
+          synopsis: 'The inspiring true journey of Major Mukund Varadarajan and his valour in Kashmir. An unforgettable tale of sacrifice, brotherhood, and devotion to the nation.'
+        },
+        {
+          id: 'm2',
+          title: 'The Greatest of All Time (GOAT)',
+          certificate: 'UA',
+          language: 'Tamil',
+          format: '4K RGB Laser · Atmos',
+          genre: 'Action · Sci-Fi · Thriller',
+          duration: '3h 03m',
+          rating: '8.7',
+          votes: '58.2K',
+          poster: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80',
+          synopsis: 'A high-octane espionage espionage thriller following an elite anti-terror squad agent whose past secrets return to trigger a deadly face-off.'
+        },
+        {
+          id: 'm3',
+          title: 'Kanguva',
+          certificate: 'UA',
+          language: 'Tamil · 3D',
+          format: '3D Laser · Dolby 7.1',
+          genre: 'Period Action · Fantasy',
+          duration: '2h 34m',
+          rating: '8.4',
+          votes: '29.5K',
+          poster: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=600&q=80',
+          synopsis: 'A raw, primal warrior across 500 years fights for tribal honour and destiny against formidable ancestral forces.'
+        },
+        {
+          id: 'm4',
+          title: 'Vettaiyan',
+          certificate: 'UA 16+',
+          language: 'Tamil',
+          format: '2D · Dolby Atmos',
+          genre: 'Action · Crime · Drama',
+          duration: '2h 43m',
+          rating: '8.6',
+          votes: '36.1K',
+          poster: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=600&q=80',
+          synopsis: 'An unapologetic supercop encounters systemic moral corruption while uncovering a sinister education loan racket.'
+        }
+      ],
+
+      // 2. Real Popular Theatres in Pudukkottai
+      theatres: [
+        {
+          id: 'th1',
+          name: 'Sri Brinda Multiplex RGB 4K Laser',
+          location: 'Santhanathapuram, Pudukkottai',
+          screen: 'Screen 1 (Laser 4K · Dolby Atmos)',
+          amenities: ['M-Ticket', 'Food & Beverages', 'Dolby Atmos', 'Parking', 'Free Cancellation'],
+          cancellationAllowed: true,
+          showtimes: [
+            { time: '10:30 AM', period: 'morning', status: 'available', priceRanges: '₹120 - ₹250' },
+            { time: '02:15 PM', period: 'matinee', status: 'fast-filling', priceRanges: '₹120 - ₹250' },
+            { time: '06:30 PM', period: 'evening', status: 'fast-filling', priceRanges: '₹120 - ₹250' },
+            { time: '10:00 PM', period: 'night', status: 'available', priceRanges: '₹120 - ₹250' }
+          ]
+        },
+        {
+          id: 'th2',
+          name: 'Shanthi Theatre A/C 2K Dolby Atmos',
+          location: 'South 4th Street, Pudukkottai',
+          screen: 'Main Hall',
+          amenities: ['M-Ticket', 'Snack Bar', 'Two Wheeler Parking'],
+          cancellationAllowed: false,
+          showtimes: [
+            { time: '11:00 AM', period: 'morning', status: 'available', priceRanges: '₹100 - ₹180' },
+            { time: '02:30 PM', period: 'matinee', status: 'almost-full', priceRanges: '₹100 - ₹180' },
+            { time: '06:45 PM', period: 'evening', status: 'almost-full', priceRanges: '₹100 - ₹180' },
+            { time: '10:15 PM', period: 'night', status: 'available', priceRanges: '₹100 - ₹180' }
+          ]
+        },
+        {
+          id: 'th3',
+          name: 'Bhuvaneswari Theatre 4K Digital',
+          location: 'Alangudi Road, Pudukkottai',
+          screen: 'RGB Digital Screen',
+          amenities: ['M-Ticket', 'Canteen', 'Car Parking'],
+          cancellationAllowed: true,
+          showtimes: [
+            { time: '11:15 AM', period: 'morning', status: 'available', priceRanges: '₹90 - ₹150' },
+            { time: '02:45 PM', period: 'matinee', status: 'available', priceRanges: '₹90 - ₹150' },
+            { time: '07:00 PM', period: 'evening', status: 'fast-filling', priceRanges: '₹90 - ₹150' },
+            { time: '10:30 PM', period: 'night', status: 'available', priceRanges: '₹90 - ₹150' }
+          ]
+        },
+        {
+          id: 'th4',
+          name: 'Siva Cinemas A/C Laser 3D',
+          location: 'Aranthangi Road, Pudukkottai',
+          screen: 'Audi 02 (Dolby 7.1)',
+          amenities: ['M-Ticket', 'Food Court', '3D Glasses Provided', 'Wheelchair Access'],
+          cancellationAllowed: true,
+          showtimes: [
+            { time: '10:45 AM', period: 'morning', status: 'available', priceRanges: '₹110 - ₹200' },
+            { time: '02:00 PM', period: 'matinee', status: 'fast-filling', priceRanges: '₹110 - ₹200' },
+            { time: '06:15 PM', period: 'evening', status: 'available', priceRanges: '₹110 - ₹200' },
+            { time: '09:45 PM', period: 'night', status: 'almost-full', priceRanges: '₹110 - ₹200' }
+          ]
+        }
+      ],
+
+      // 3. Seat Tier Architecture & Pricing
+      tiers: [
+        {
+          name: 'Elite Recliner',
+          price: 250,
+          rows: ['A'],
+          seatsPerRow: 14
+        },
+        {
+          name: 'Premium Balcony',
+          price: 180,
+          rows: ['B', 'C', 'D'],
+          seatsPerRow: 16
+        },
+        {
+          name: 'First Class',
+          price: 120,
+          rows: ['E', 'F', 'G', 'H'],
+          seatsPerRow: 18
+        },
+        {
+          name: 'Second Class',
+          price: 80,
+          rows: ['J'],
+          seatsPerRow: 18
+        }
+      ],
+
+      // Mock list of already booked seats (for realism)
+      bookedSeatIds: [
+        'A4', 'A5', 'A6',
+        'B7', 'B8', 'B9', 'B10',
+        'C5', 'C6', 'C11', 'C12',
+        'D1', 'D2', 'D8', 'D9',
+        'F4', 'F5', 'F6', 'F12', 'F13',
+        'G7', 'G8', 'G9', 'G10',
+        'H1', 'H2', 'H17', 'H18'
+      ]
+    };
+
+    /**
+     * ==========================================================================
+     * APPLICATION STATE
+     * ==========================================================================
+     */
+    const state = {
+      activeMovie: MOCK_DATA.movies[0],
+      selectedDate: null,
+      selectedPeriodFilter: 'all',
+      selectedTheatre: null,
+      selectedShowtime: null,
+      selectedSeats: [] // Array of { id: 'C7', row: 'C', number: 7, tier: 'Premium', price: 180 }
+    };
+
+    /* ==========================================================================
+       DATE GENERATOR (Today + Next 5 Days)
+       ========================================================================== */
+    function generateUpcomingDates() {
+      const dates = [];
+      const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      
+      const now = new Date();
+      for (let i = 0; i < 6; i++) {
+        const d = new Date();
+        d.setDate(now.getDate() + i);
+        
+        dates.push({
+          fullDate: d,
+          dateStr: d.toISOString().split('T')[0],
+          dayName: i === 0 ? 'Today' : i === 1 ? 'Tomorrow' : days[d.getDay()],
+          dayNum: d.getDate(),
+          monthName: months[d.getMonth()]
+        });
+      }
+      return dates;
+    }
+
+    const availableDates = generateUpcomingDates();
+    state.selectedDate = availableDates[0]; // Default to Today
+
+    /* ==========================================================================
+       RENDER FUNCTIONS
+       ========================================================================== */
+
+    // 1. Render Movie Hero
+    function renderMovieHero() {
+      const container = document.getElementById('movieHeroContainer');
+      const m = state.activeMovie;
+
+      container.innerHTML = `
+        <div class="movie-poster-wrap">
+          <img src="${m.poster}" alt="${m.title} Poster" />
+        </div>
+
+        <div class="movie-details">
+          <div class="movie-rating-box">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+            <span>${m.rating}/10 (${m.votes} votes)</span>
+          </div>
+
+          <h1>${m.title}</h1>
+
+          <div class="movie-meta-tags">
+            <span class="tag-cert">${m.certificate}</span>
+            <span class="tag-format">${m.format}</span>
+            <span class="meta-item">${m.language}</span>
+            <span class="meta-divider">•</span>
+            <span class="meta-item">${m.genre}</span>
+            <span class="meta-divider">•</span>
+            <span class="meta-item">${m.duration}</span>
+          </div>
+
+          <p class="movie-synopsis">${m.synopsis}</p>
+        </div>
+
+        <div>
+          <button class="switch-movie-btn" id="switchMovieBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect>
+              <line x1="7" y1="2" x2="7" y2="22"></line>
+              <line x1="17" y1="2" x2="17" y2="22"></line>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <line x1="2" y1="7" x2="7" y2="7"></line>
+              <line x1="2" y1="17" x2="7" y2="17"></line>
+              <line x1="17" y1="17" x2="22" y2="17"></line>
+              <line x1="17" y1="7" x2="22" y2="7"></line>
+            </svg>
+            <span>Switch Movie</span>
+          </button>
+        </div>
+      `;
+
+      document.getElementById('switchMovieBtn').addEventListener('click', () => {
+        // Cycle to next movie in mock list
+        const currentIndex = MOCK_DATA.movies.findIndex(x => x.id === state.activeMovie.id);
+        const nextIndex = (currentIndex + 1) % MOCK_DATA.movies.length;
+        state.activeMovie = MOCK_DATA.movies[nextIndex];
+        renderMovieHero();
+        renderTheatresList();
+      });
+    }
+
+    // 2. Render Date Strip
+    function renderDateStrip() {
+      const container = document.getElementById('dateStripContainer');
+      container.innerHTML = '';
+
+      availableDates.forEach((dateObj, idx) => {
+        const isActive = state.selectedDate.dateStr === dateObj.dateStr;
+        const btn = document.createElement('button');
+        btn.className = `date-card ${isActive ? 'active' : ''}`;
+        btn.innerHTML = `
+          <span class="day-name">${dateObj.dayName}</span>
+          <span class="day-num">${dateObj.dayNum}</span>
+          <span class="month-name">${dateObj.monthName}</span>
+        `;
+
+        btn.addEventListener('click', () => {
+          state.selectedDate = dateObj;
+          renderDateStrip();
+          renderTheatresList();
+        });
+
+        container.appendChild(btn);
+      });
+    }
+
+    // 3. Render Theatres & Showtimes in Pudukkottai
+    function renderTheatresList() {
+      const container = document.getElementById('theatresListContainer');
+      container.innerHTML = '';
+
+      MOCK_DATA.theatres.forEach(theatre => {
+        // Filter showtimes based on active filter
+        const filteredShowtimes = theatre.showtimes.filter(sh => {
+          if (state.selectedPeriodFilter === 'all') return true;
+          return sh.period === state.selectedPeriodFilter;
+        });
+
+        if (filteredShowtimes.length === 0) return;
+
+        const card = document.createElement('div');
+        card.className = 'theatre-card';
+
+        // Amenities badges HTML
+        const amenitiesHtml = theatre.amenities.map(a => {
+          const isCanc = a.toLowerCase().includes('cancellation');
+          return `<span class="amenity-badge ${isCanc ? 'cancellation' : ''}">${a}</span>`;
+        }).join('');
+
+        // Showtimes buttons HTML
+        const showtimesHtml = filteredShowtimes.map(st => {
+          const statusClass = st.status === 'fast-filling' ? 'fast-filling' : st.status === 'almost-full' ? 'almost-full' : '';
+          return `
+            <button class="showtime-btn ${statusClass}" data-theatre-id="${theatre.id}" data-time="${st.time}">
+              <span class="showtime-time">${st.time}</span>
+              <span class="showtime-sub">DOLBY ATMOS</span>
+            </button>
+          `;
+        }).join('');
+
+        card.innerHTML = `
+          <div class="theatre-header">
+            <div class="theatre-title-box">
+              <h3>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                  <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                ${theatre.name}
+              </h3>
+              <div class="theatre-location">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                  <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                ${theatre.location}
+              </div>
+              <div class="theatre-amenities">
+                ${amenitiesHtml}
+              </div>
+            </div>
+          </div>
+
+          <div class="showtimes-grid">
+            ${showtimesHtml}
+          </div>
+        `;
+
+        // Attach Click Listener to each Showtime button
+        card.querySelectorAll('.showtime-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const time = btn.dataset.time;
+            openSeatSelection(theatre, time);
+          });
+        });
+
+        container.appendChild(card);
+      });
+    }
+
+    // 4. Open Interactive Seat Selection Modal
+    function openSeatSelection(theatre, showtime) {
+      state.selectedTheatre = theatre;
+      state.selectedShowtime = showtime;
+      state.selectedSeats = []; // Reset selected seats
+
+      document.getElementById('seatModalTitle').innerText = `${state.activeMovie.title} (${state.activeMovie.certificate})`;
+      document.getElementById('seatModalMeta').innerText = `${theatre.name} · ${theatre.screen} · ${state.selectedDate.dayName}, ${state.selectedDate.dayNum} ${state.selectedDate.monthName} @ ${showtime}`;
+
+      renderSeatGrid();
+      updateSeatSelectionTally();
+
+      document.getElementById('seatModalBackdrop').classList.add('active');
+      document.body.style.overflow = 'hidden'; // prevent background scrolling
+    }
+
+    function closeSeatSelection() {
+      document.getElementById('seatModalBackdrop').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // 5. Render Seating Matrix with Tiers & Aisles
+    function renderSeatGrid() {
+      const container = document.getElementById('seatGridContainer');
+      container.innerHTML = '';
+
+      MOCK_DATA.tiers.forEach(tier => {
+        const tierDiv = document.createElement('div');
+        tierDiv.className = 'tier-section';
+
+        tierDiv.innerHTML = `
+          <div class="tier-header">
+            <span>${tier.name}</span>
+            <span class="tier-price">₹${tier.price}</span>
+          </div>
+        `;
+
+        tier.rows.forEach(rowLetter => {
+          const rowDiv = document.createElement('div');
+          rowDiv.className = 'seat-row';
+
+          // Left row label
+          const leftLabel = document.createElement('span');
+          leftLabel.className = 'row-label';
+          leftLabel.innerText = rowLetter;
+          rowDiv.appendChild(leftLabel);
+
+          // Seats across row
+          const totalSeats = tier.seatsPerRow;
+          const leftWing = Math.floor(totalSeats * 0.25);
+          const rightWingStart = Math.ceil(totalSeats * 0.75);
+
+          for (let sNum = 1; sNum <= totalSeats; sNum++) {
+            // Add aisle space
+            if (sNum === leftWing + 1 || sNum === rightWingStart + 1) {
+              const aisle = document.createElement('div');
+              aisle.className = 'aisle-gap';
+              rowDiv.appendChild(aisle);
+            }
+
+            const seatId = `${rowLetter}${sNum}`;
+            const isBooked = MOCK_DATA.bookedSeatIds.includes(seatId);
+            const isSelected = state.selectedSeats.some(s => s.id === seatId);
+
+            const seatBtn = document.createElement('button');
+            seatBtn.className = `seat ${isBooked ? 'booked' : ''} ${isSelected ? 'selected' : ''}`;
+            seatBtn.dataset.seatId = seatId;
+            seatBtn.dataset.row = rowLetter;
+            seatBtn.dataset.number = sNum;
+            seatBtn.dataset.tier = tier.name;
+            seatBtn.dataset.price = tier.price;
+            seatBtn.innerText = sNum;
+
+            // Accessibility attributes
+            seatBtn.setAttribute('aria-label', `Row ${rowLetter} Seat ${sNum}, ${tier.name} ₹${tier.price}, ${isBooked ? 'Sold out' : isSelected ? 'Selected' : 'Available'}`);
+            if (isBooked) {
+              seatBtn.setAttribute('disabled', 'true');
+              seatBtn.setAttribute('aria-disabled', 'true');
+            } else {
+              seatBtn.setAttribute('tabindex', '0');
+            }
+
+            // Click listener
+            seatBtn.addEventListener('click', () => toggleSeatSelection(seatBtn));
+
+            // Keyboard navigation (Enter / Space)
+            seatBtn.addEventListener('keydown', (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleSeatSelection(seatBtn);
+              }
+            });
+
+            rowDiv.appendChild(seatBtn);
+          }
+
+          // Right row label
+          const rightLabel = document.createElement('span');
+          rightLabel.className = 'row-label';
+          rightLabel.innerText = rowLetter;
+          rowDiv.appendChild(rightLabel);
+
+          tierDiv.appendChild(rowDiv);
+        });
+
+        container.appendChild(tierDiv);
+      });
+    }
+
+    // Toggle single seat selection
+    function toggleSeatSelection(seatBtn) {
+      if (seatBtn.classList.contains('booked')) return;
+
+      const seatId = seatBtn.dataset.seatId;
+      const index = state.selectedSeats.findIndex(s => s.id === seatId);
+
+      if (index > -1) {
+        // Deselect
+        state.selectedSeats.splice(index, 1);
+        seatBtn.classList.remove('selected');
+      } else {
+        // Check max 8 seats per booking
+        if (state.selectedSeats.length >= 8) {
+          alert('Maximum 8 seats allowed per booking on TicketVibe.');
+          return;
+        }
+
+        // Select
+        state.selectedSeats.push({
+          id: seatId,
+          row: seatBtn.dataset.row,
+          number: seatBtn.dataset.number,
+          tier: seatBtn.dataset.tier,
+          price: Number(seatBtn.dataset.price)
+        });
+        seatBtn.classList.add('selected');
+      }
+
+      updateSeatSelectionTally();
+    }
+
+    // 6. Update Seat Selection Tally (Bottom Bar)
+    function updateSeatSelectionTally() {
+      const count = state.selectedSeats.length;
+      const total = state.selectedSeats.reduce((acc, curr) => acc + curr.price, 0);
+
+      const countEl = document.getElementById('tallySeatsCount');
+      const priceEl = document.getElementById('tallyTotalPrice');
+      const proceedBtn = document.getElementById('proceedCheckoutBtn');
+
+      if (count > 0) {
+        const seatNames = state.selectedSeats.map(s => s.id).join(', ');
+        countEl.innerText = `${count} Seat${count > 1 ? 's' : ''} (${seatNames})`;
+        priceEl.innerText = `₹${total}`;
+        proceedBtn.removeAttribute('disabled');
+      } else {
+        countEl.innerText = '0 Seats Selected';
+        priceEl.innerText = '₹0';
+        proceedBtn.setAttribute('disabled', 'true');
+      }
+    }
+
+    // 7. Open Booking Summary & Checkout Modal
+    function openCheckoutSummary() {
+      if (state.selectedSeats.length === 0) return;
+
+      const m = state.activeMovie;
+      const th = state.selectedTheatre;
+      const baseTicketsTotal = state.selectedSeats.reduce((acc, s) => acc + s.price, 0);
+      const convFee = state.selectedSeats.length * 30; // ₹30 per ticket convenience fee
+      const grandTotal = baseTicketsTotal + convFee;
+
+      const seatsBadges = state.selectedSeats.map(s => `
+        <span class="seat-badge">${s.id} (${s.tier})</span>
+      `).join('');
+
+      const checkoutBody = document.getElementById('checkoutBody');
+      checkoutBody.innerHTML = `
+        <div class="ticket-summary-card">
+          <div class="ticket-movie-row">
+            <img src="${m.poster}" class="checkout-poster" alt="${m.title}" />
+            <div>
+              <div class="checkout-movie-title">${m.title}</div>
+              <div class="checkout-movie-meta">${m.certificate} · ${m.language} · ${m.format}</div>
+              <div class="checkout-movie-meta" style="color: #7C3AED; font-weight: 700; margin-top: 4px;">
+                ${th.name}
+              </div>
+            </div>
+          </div>
+
+          <div class="summary-info-grid">
+            <div class="summary-info-item">
+              <span>Date & Show</span>
+              <strong>${state.selectedDate.dayName}, ${state.selectedDate.dayNum} ${state.selectedDate.monthName} @ ${state.selectedShowtime}</strong>
+            </div>
+            <div class="summary-info-item">
+              <span>Auditorium</span>
+              <strong>${th.screen}</strong>
+            </div>
+            <div class="summary-info-item" style="grid-column: span 2;">
+              <span>Selected Seats (${state.selectedSeats.length})</span>
+              <div class="selected-seats-badge-list">
+                ${seatsBadges}
+              </div>
+            </div>
+          </div>
+
+          <div class="bill-breakdown">
+            <div class="bill-row">
+              <span>Base Ticket Price (${state.selectedSeats.length} Tickets)</span>
+              <strong>₹${baseTicketsTotal}.00</strong>
+            </div>
+            <div class="bill-row">
+              <span>Integrated GST & Convenience Fee</span>
+              <strong>₹${convFee}.00</strong>
+            </div>
+            <div class="bill-row total-row">
+              <span>Grand Total</span>
+              <span style="color: #7C3AED;">₹${grandTotal}.00</span>
+            </div>
+          </div>
+        </div>
+
+        <form id="checkoutForm" onsubmit="handleConfirmBooking(event, ${grandTotal})">
+          <div class="checkout-form-group">
+            <label for="userMobile">Mobile Number (For WhatsApp / SMS M-Ticket)</label>
+            <input type="tel" id="userMobile" placeholder="e.g. 9842100000" pattern="[0-9]{10}" required value="9842198421" />
+          </div>
+
+          <div class="checkout-form-group">
+            <label for="userEmail">Email Address (For Tax Invoice)</label>
+            <input type="email" id="userEmail" placeholder="yourname@gmail.com" required value="guest.pudukkottai@ticketvibe.in" />
+          </div>
+
+          <button type="submit" class="btn-confirm-payment">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            <span>Confirm & Pay ₹${grandTotal}.00</span>
+          </button>
+        </form>
+      `;
+
+      closeSeatSelection();
+      document.getElementById('checkoutModalBackdrop').classList.add('active');
+    }
+
+    function closeCheckout() {
+      document.getElementById('checkoutModalBackdrop').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // 8. Handle Booking Confirmation -> Instant Digital M-Ticket
+    window.handleConfirmBooking = function(e, totalPaid) {
+      e.preventDefault();
+
+      const bookingRef = 'TN-PDK-' + Math.floor(100000 + Math.random() * 900000);
+      const m = state.activeMovie;
+      const th = state.selectedTheatre;
+      const seatNames = state.selectedSeats.map(s => s.id).join(', ');
+
+      const checkoutBody = document.getElementById('checkoutBody');
+      checkoutBody.innerHTML = `
+        <div class="ticket-pass">
+          <div class="ticket-pass-header">
+            <h2>Booking Confirmed!</h2>
+            <div style="font-size: 13px; opacity: 0.9; margin-top: 4px;">M-Ticket sent to your Mobile & Email</div>
+          </div>
+
+          <div class="ticket-pass-body">
+            <!-- Simulated QR Code SVG -->
+            <div class="ticket-qr-code">
+              <svg width="130" height="130" viewBox="0 0 100 100" fill="#1e293b">
+                <rect x="0" y="0" width="30" height="30" fill="#7C3AED"/>
+                <rect x="5" y="5" width="20" height="20" fill="#fff"/>
+                <rect x="10" y="10" width="10" height="10" fill="#7C3AED"/>
+                <rect x="70" y="0" width="30" height="30" fill="#7C3AED"/>
+                <rect x="75" y="5" width="20" height="20" fill="#fff"/>
+                <rect x="80" y="10" width="10" height="10" fill="#7C3AED"/>
+                <rect x="0" y="70" width="30" height="30" fill="#7C3AED"/>
+                <rect x="5" y="75" width="20" height="20" fill="#fff"/>
+                <rect x="10" y="80" width="10" height="10" fill="#7C3AED"/>
+                <rect x="40" y="10" width="15" height="15" fill="#1e293b"/>
+                <rect x="40" y="40" width="20" height="20" fill="#1e293b"/>
+                <rect x="15" y="40" width="15" height="15" fill="#1e293b"/>
+                <rect x="70" y="40" width="15" height="15" fill="#1e293b"/>
+                <rect x="40" y="70" width="20" height="20" fill="#1e293b"/>
+                <rect x="70" y="70" width="15" height="15" fill="#1e293b"/>
+              </svg>
+            </div>
+
+            <div class="ticket-booking-id">BOOKING ID: ${bookingRef}</div>
+
+            <div style="text-align: left; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px; margin-bottom: 20px; font-size: 13px;">
+              <div style="font-weight: 800; font-size: 16px; color: #1e293b; margin-bottom: 4px;">${m.title}</div>
+              <div style="color: #64748b; margin-bottom: 8px;">${th.name} · ${th.screen}</div>
+              <div style="display: flex; justify-content: space-between; border-top: 1px dashed #cbd5e1; padding-top: 8px;">
+                <span>Show: <strong>${state.selectedDate.dayName}, ${state.selectedShowtime}</strong></span>
+                <span>Seats: <strong style="color: #7C3AED;">${seatNames}</strong></span>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-top: 6px;">
+                <span>Total Amount:</span>
+                <strong style="color: #1e293b;">₹${totalPaid}.00 (PAID)</strong>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+              <button onclick="window.print()" class="btn-user" style="flex: 1; justify-content: center; background: #1e293b;">
+                Print / Save PDF
+              </button>
+              <button onclick="closeCheckout(); state.selectedSeats=[];" class="btn-user" style="flex: 1; justify-content: center;">
+                Book Another Movie
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    };
+
+    /* ==========================================================================
+       EVENT LISTENERS & FILTER INITIALIZATION
+       ========================================================================== */
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Initial Render
+      renderMovieHero();
+      renderDateStrip();
+      renderTheatresList();
+
+      // 2. Filter Pills (Morning, Matinee, Evening, Night)
+      document.querySelectorAll('.filter-pill').forEach(pill => {
+        pill.addEventListener('click', () => {
+          document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          state.selectedPeriodFilter = pill.dataset.filter;
+          renderTheatresList();
+        });
+      });
+
+      // 3. Modal Controls
+      document.getElementById('closeSeatModalBtn').addEventListener('click', closeSeatSelection);
+      document.getElementById('seatModalBackdrop').addEventListener('click', (e) => {
+        if (e.target.id === 'seatModalBackdrop') closeSeatSelection();
+      });
+
+      document.getElementById('proceedCheckoutBtn').addEventListener('click', openCheckoutSummary);
+      document.getElementById('closeCheckoutModalBtn').addEventListener('click', closeCheckout);
+      document.getElementById('checkoutModalBackdrop').addEventListener('click', (e) => {
+        if (e.target.id === 'checkoutModalBackdrop') closeCheckout();
+      });
+
+      // 4. Movie search input filter
+      document.getElementById('movieSearchInput').addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        if (!query) {
+          renderTheatresList();
+          return;
+        }
+
+        // Filter theatre names or current movie
+        const matched = MOCK_DATA.movies.find(m => m.title.toLowerCase().includes(query));
+        if (matched && matched.id !== state.activeMovie.id) {
+          state.activeMovie = matched;
+          renderMovieHero();
+        }
+        renderTheatresList();
+      });
+
+      // 5. Location dropdown change
+      document.getElementById('locationSelect').addEventListener('change', (e) => {
+        alert(`Location changed to ${e.target.options[e.target.selectedIndex].text}! Loading theatres...`);
+      });
+    });
+  </script>
+</body>
+</html>
